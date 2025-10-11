@@ -18,7 +18,12 @@ class CompteResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationLabel = 'Comptes';
-    // protected static string|UnitEnum|null $navigationGroup = '🏦 Gestion Bancaire';
+    protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Gestion des membres';
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::where('status','=','processing')->count();
+    // } 
 
     public static function table(Table $table): Table
     {
@@ -35,5 +40,7 @@ class CompteResource extends Resource
           
         ];
     }
+
+    
 }
 

@@ -22,6 +22,11 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Agents';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
     protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Ressources Humaines';
+
+     public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    } 
     
       public static function shouldRegisterNavigation(): bool
     {

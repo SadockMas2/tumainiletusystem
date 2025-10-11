@@ -29,19 +29,29 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default() // Ce panneau est le panneau par défaut de ton app
+            ->default() //  le panneau par défaut de l'app
             ->id('admin')
             ->profile()
             ->path('admin')
-            ->brandLogo(asset('images/tumaini_letu.jpg'))
-            ->brandLogoHeight('3rem') // Agrandit le logo (tu peux mettre 4rem, 60px, etc.)
+            // ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('30px') // Agrandit le logo (tu peux mettre 4rem, 60px, etc.)
             ->brandName('TUMAINI LETU SYSTEM') // Nom affiché dans la barre du haut
-            ->login() // Active la page de connexion
-            ->registration() // Si tu veux permettre la création de compte
-            ->passwordReset() // Pour permettre la réinitialisation de mot de passe
+            ->favicon(asset('images/logo.png'))
+            ->login() 
+            ->registration() 
+            ->passwordReset() 
             ->colors([
                 'primary' => Color::Emerald,
+                // 'gray' => Color::Slate, 
+                // 'danger' => Color::Rose,
+                // // 'info' => Color::Blue,
+                // 'success' => Color::Emerald,
+                // 'warning' => Color::Orange,
             ])
+
+            ->globalSearchKeyBindings(['commande+k','ctrl+k'])
+            ->sidebarCollapsibleOnDesktop()
+            ->font('Inter')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')

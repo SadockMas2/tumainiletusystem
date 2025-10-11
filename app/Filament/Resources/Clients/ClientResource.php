@@ -22,8 +22,19 @@ class ClientResource extends Resource
     // ✅ Navigation
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Membres';
-    // protected static string|UnitEnum|null $navigationGroup = '🏦 Gestion Bancaire';
+     protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Gestion des membres';
 
+       public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    } 
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+         return static::getModel()::count() > 10
+         ? 'warning'
+         :'primary' ;
+    }
     // 🔒 Masquer la ressource si l'utilisateur n'a pas la permission
     public static function canViewInNavigation(): bool
     {
