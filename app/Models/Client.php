@@ -22,7 +22,40 @@ class Client extends Model
         'status',
         'identifiant_national',
         'type_client',
+        'type_compte',
+        'activites',
+        'etat_civil',
         
         
     ];
+
+            public function typeCompte()
+        {
+            return $this->belongsTo(TypeCompte::class, 'type_compte_id');
+        }
+        protected static function boot()
+        {
+            parent::boot();
+
+            static::creating(function ($client) {
+                // Si aucun numero_membre n’est fourni, on le génère automatiquement
+                if (empty($client->numero_membre)) {
+                    $lastNumber = static::max('numero_membre') ?? 100000;
+                    $client->numero_membre = $lastNumber + 1;
+                }
+            });
+        }
+
+        public function groupesSolidaires()
+        {
+            return $this->belongsToMany(GroupeSolidaire::class, 'groupes_membres', 'client_id', 'groupe_solidaire_id');
+        }
+
+        public function comptes()
+        {
+            return $this->hasMany(Compte::class);
+        }
+
+
+
 }

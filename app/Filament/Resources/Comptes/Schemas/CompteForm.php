@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Comptes\Schemas;
 
-use Filament\Forms\Components\DatePicker;
+use App\Models\Client;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -13,28 +13,29 @@ class CompteForm
     {
         return $schema
             ->components([
-                TextInput::make('client_id')
+                Select::make('client_id')
+                    ->label('Client')
+                    ->options(Client::all()->pluck('nom', 'id'))
+                    ->searchable()
                     ->required()
-                    ->numeric(),
+                    ->reactive(),
+
+                TextInput::make('numero_membre')
+                    ->label('Numéro du membre')
+                    ->disabled()
+                    ->default(fn($get) => $get('client_id') ? Client::find($get('client_id'))->numero_membre : ''),
+
+                Select::make('devise')
+                    ->options([
+                        'USD' => 'USD',
+                        'CDF' => 'CDF',
+                    ])
+                    ->required(),
+
                 TextInput::make('numero_compte')
-                    ->required(),
-                Select::make('type_compte')
-                    ->options(['courant' => 'Courant', 'épargne' => 'Épargne', 'autre' => 'Autre'])
-                    ->default('courant')
-                    ->required(),
-                TextInput::make('solde')
-                    ->required()
-                    ->numeric()
-                    ->default(0.0),
-                DatePicker::make('date_ouverture')
-                    ->required(),
-                Select::make('statut')
-                    ->options(['actif' => 'Actif', 'inactif' => 'Inactif', 'ferme' => 'Ferme'])
-                    ->default('actif')
-                    ->required(),
-                TextInput::make('devise')
-                    ->required()
-                    ->default('USD'),
+                    ->label('Numéro du compte')
+                    ->disabled()
+                    ->default('') // sera rempli automatiquement via le modèle
             ]);
     }
 }

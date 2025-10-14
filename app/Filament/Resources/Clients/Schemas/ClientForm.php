@@ -2,30 +2,71 @@
 
 namespace App\Filament\Resources\Clients\Schemas;
 
+use App\Models\TypeCompte;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Facades\Filament;
+use Filament\Tables\Columns\SelectColumn;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class ClientForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('nom')->required(),
-                TextInput::make('postnom')->required(),
-                TextInput::make('prenom')->required(),
-                DatePicker::make('date_naissance'),
-                TextInput::make('email')->label('Email address')->email()->required(),
-                TextInput::make('telephone')->tel(),
-                TextInput::make('adresse'),
-                TextInput::make('ville'),
-                Select::make('pays')
-                    ->label('Pays')
-                    ->options([
+        return $schema->components([
+            
+            \Filament\Schemas\Components\Section::make('Informations personnelles')
+                ->description('Renseignez les informations de base du client.')
+                ->schema([
+                    \Filament\Schemas\Components\Grid::make(3)->schema([
+                        TextInput::make('nom')->required(),
+                        TextInput::make('postnom')->required(),
+                        TextInput::make('prenom')->required(),
+                        DatePicker::make('date_naissance')->label('Date de naissance'),
+                        TextInput::make('email')->label('Email')->email()->required(),
+                        TextInput::make('telephone')->label('Téléphone')->tel()->required(),
+
+                           Select::make('activites')
+                            ->label('Activité (s)')
+                            ->options([
+                                'Com' => 'commercant',
+                                'phar'=> 'Pharmacien',
+                            ])
+                            ->searchable()
+                            ->required(),
+
+                            Select::make('etat_civil')
+                                ->label('État civil')
+                                ->options([
+                                    'Célibataire' => 'Célibataire',
+                                    'Marié' => 'Marié(e)',
+                                    'Divorcé' => 'Divorcé(e)',
+                                    'Veuf' => 'Veuf(ve)',
+                                ])
+                                ->searchable()
+                                ->required(),
+                            
+
+                    ]),
+                ]),
+
+            \Filament\Schemas\Components\Section::make('Adresse & Localisation')
+                ->schema([
+                    \Filament\Schemas\Components\Grid::make(3)->schema([
+                        TextInput::make('adresse')
+                           ->required(),
+                        
+                        TextInput::make('ville'),
+                        Select::make('pays')
+                            ->label('Pays')
+                            ->searchable()
+                            ->required()
+                            ->options([
                         'AF' => 'Afghanistan',
                         'AL' => 'Albanie',
                         'DZ' => 'Algérie',
@@ -82,21 +123,41 @@ class ClientForm
                         'US' => 'États-Unis',
                         'ZM' => 'Zambie',
                         'ZW' => 'Zimbabwe',
+                                // 👉 tu peux réduire ta liste ou la charger dynamiquement plus tard
+                            ]),
+                        TextInput::make('code_postal')->label('Code postal'),
+                    ]),
+                ]),
+
+            \Filament\Schemas\Components\Section::make('Compte membre')
+                ->description('Paramètres liés au compte du membre.')
+                ->schema([
+                    \Filament\Schemas\Components\Grid::make(2)->schema([
+                        Select::make('type_compte')
+                            ->label('Type de compte')
+                            ->options(TypeCompte::pluck('designation', 'designation'))
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        Select::make('type_client')
+                            ->label('Type de client')
+                            ->options([
+                                'Prt' => 'Particulier',
+                                'Etrp'=> 'Entreprise',
+                            ])
+                            ->searchable()
+                            ->required(),
+                        TextInput::make('identifiant_national')
+                            ->label('Identifiant national')
+                            ->columnSpan(2)
+                            ->required(),                            
                     ])
-                    ->searchable()
-                    ->required(),
-                TextInput::make('code_postal'),
-                Hidden::make('id_createur')->default(Filament::auth()->id()),
-                TextInput::make('status')->required()->default('actif'),
-                TextInput::make('identifiant_national'),
-                Select::make('type_client')
-                    ->label('Type client')
-                    ->options([
-                        'Prt' => 'Particulier',
-                        'Etrp'=> 'Entreprise',
-                    ])
-                    ->searchable()
-                    ->required(),
-            ]);
+                 
+            
+                ]),
+
+            Hidden::make('id_createur')->default(Filament::auth()->id()),
+            TextInput::make('status')->required()->default('actif')->hidden(),
+        ]);
     }
 }

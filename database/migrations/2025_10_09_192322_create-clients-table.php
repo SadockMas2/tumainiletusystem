@@ -28,7 +28,9 @@ return new class extends Migration
             $table->bigInteger('id_createur');
             $table->string('status')->default('actif');
             $table->string('identifiant_national');
+            $table->string('type_compte');
             $table->string('type_client');
+
             $table->timestamps();
         });
     }

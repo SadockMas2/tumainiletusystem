@@ -16,13 +16,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TypeCompteResource extends Resource
 {
         use HasRoleBasedAccess;
     protected static ?string $model = TypeCompte::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+      protected static ?string $navigationLabel = ' Type de Compte ';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-rupee';
+    protected static string|UnitEnum|null $navigationGroup = '💳 Gestion des comptes';
 
       public static function getNavigationBadge(): ?string
     {

@@ -2,8 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Facades\Filament;
-use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
@@ -11,47 +9,38 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession as MiddlewareAuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
-use App\Providers\RouteServiceProvider;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default() //  le panneau par défaut de l'app
+            ->default()
             ->id('admin')
             ->profile()
             ->path('admin')
-            // ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('30px') // Agrandit le logo (tu peux mettre 4rem, 60px, etc.)
-            ->brandName('TUMAINI LETU SYSTEM') // Nom affiché dans la barre du haut
-            ->favicon(asset('images/logo.png'))
-            ->login() 
-            ->registration() 
-            ->passwordReset() 
+            ->brandLogo(asset('images/logo-tumaini1.png'))
+            // ->brandLogoHeight('3rem')
+            ->brandName('TUMAINI LETU SYSTEM')
+            ->brandLogo(fn () => view('vendor.filament-panels.components.logo'))
+
+            ->login()
+            ->registration()
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Emerald,
-                // 'gray' => Color::Slate, 
-                // 'danger' => Color::Rose,
-                // // 'info' => Color::Blue,
-                // 'success' => Color::Emerald,
-                // 'warning' => Color::Orange,
             ])
 
-            ->globalSearchKeyBindings(['commande+k','ctrl+k'])
-            ->sidebarCollapsibleOnDesktop()
-            ->font('Inter')
+        ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -81,7 +70,9 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class, // 🔒 Protège le panneau : login obligatoire
+                Authenticate::class,
             ]);
+            // ⛔ SUPPRIMEZ cette ligne : ->viteTheme('resources/css/filament/admin/theme.css')
     }
+    
 }

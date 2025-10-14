@@ -14,23 +14,14 @@ class ComptesTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('numero_compte')
-                    ->searchable(),
-                TextColumn::make('type_compte')
-                    ->badge(),
-                TextColumn::make('solde')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('date_ouverture')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('statut')
-                    ->badge(),
-                TextColumn::make('devise')
-                    ->searchable(),
+                TextColumn::make('numero_compte')->label('Compte'),
+                TextColumn::make('numero_membre')->label('Numéro Membre'),
+                TextColumn::make('client.nom')->label('Nom '),
+                TextColumn::make('client.postnom')->label('Post '),
+                TextColumn::make('client.prenom')->label('prenom '),
+                TextColumn::make('devise')->label('Devise'),
+                TextColumn::make('solde')->label('Solde'),
+                TextColumn::make('statut')->label('Statut'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

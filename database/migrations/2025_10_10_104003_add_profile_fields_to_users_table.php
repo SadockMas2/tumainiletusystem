@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('image')->nullable();
-            $table->foreignId('profil_type_id')->nullable()->constrained('profil_types')->nullOnDelete();
+            // $table->foreignId('profil_type_id')->nullable()->constrained('profil_types')->nullOnDelete();
         });
     }
 
