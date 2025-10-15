@@ -23,4 +23,9 @@ class CreateGroupeSolidaire extends CreateRecord
     {
         $this->record->membres()->sync($this->membres);
     }
+
+    protected function getRedirectUrl(): string
+{
+    return $this->getResource()::getUrl('index');
+}
 }

@@ -2,6 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\HeaderThemeSwitcher;
+use Filament\Navigation\MenuItem;
+use Filament\Actions\Action;
+
+use Filament\Navigation\UserMenuItem; // ✅ IMPORT CORRECT
 use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
@@ -28,22 +33,20 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->path('admin')
             ->brandLogo(asset('images/logo-tumaini1.png'))
-            // ->brandLogoHeight('3rem')
             ->brandName('TUMAINI LETU SYSTEM')
             ->brandLogo(fn () => view('vendor.filament-panels.components.logo'))
-
             ->login()
             ->registration()
             ->passwordReset()
             ->colors([
                 'primary' => Color::Emerald,
             ])
-
-        ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Gestion du système')
@@ -58,7 +61,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-            ])
+                HeaderThemeSwitcher::class,
+])
+            // ✅ APPROCHE SIMPLIFIÉE - SUPPRIMEZ LE USER MENU ITEM POUR L'INSTANT
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -69,10 +74,15 @@ class AdminPanelProvider extends PanelProvider
                 HandlePrecognitiveRequests::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->userMenuItems([
+            'settings' => Action::make('settings')
+                ->label('Paramètres')
+                ->url(fn (): string => '/admin/settings')
+                ->icon('heroicon-o-cog-6-tooth'),
+            ])
+            
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            // ⛔ SUPPRIMEZ cette ligne : ->viteTheme('resources/css/filament/admin/theme.css')
     }
-    
 }

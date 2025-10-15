@@ -17,8 +17,7 @@ class CyclesTable
                 TextColumn::make('client_nom')->label('Client')->sortable(),
                 TextColumn::make('numero_cycle')->label('Numéro du cycle')->sortable(),
                 TextColumn::make('devise')->label('Devise'),
-                TextColumn::make('solde_initial')->label('Solde initial')->money('cdf', true),
-                TextColumn::make('statut')->label('Statut'),
+                TextColumn::make('solde_initial')->label('Solde initial'),
                 TextColumn::make('date_debut')->date()->label('Début'),
                 TextColumn::make('date_fin')->date()->label('Fin')->toggleable(),
                 TextColumn::make('created_at')

@@ -18,50 +18,51 @@ class EpargneForm
             ->components([
                 // Sélection du client
                 Select::make('client_id')
-                    ->label('Membre')
-                    ->options(function () {
-                        return Client::all()->mapWithKeys(function ($client) {
-                            $nomComplet = trim($client->nom . ' ' . $client->postnom . ' ' . $client->prenom);
-                            return [$client->id => $nomComplet ?: 'Inconnu'];
-                        })->toArray();
-                    })
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set) {
-                        $client = Client::find($state);
+    ->label('Membre')
+    ->options(function () {
+        return Client::all()->mapWithKeys(function ($client) {
+            $nomComplet = trim($client->nom . ' ' . $client->postnom . ' ' . $client->prenom);
+            return [$client->id => $nomComplet ?: 'Inconnu'];
+        })->toArray();
+    })
+    ->required()
+    ->reactive() // déclenche la logique après sélection
+    ->afterStateUpdated(function ($state, $set, $get) {
+        $set('client_nom', null);
+        $set('cycle_id', null);
+        $set('montant', null);
+        $set('devise', null);
 
-                        if ($client) {
-                            $set('client_nom', $client->nom . ' ' . $client->postnom . ' ' . $client->prenom);
+        $client = Client::find($state);
+        if ($client) {
+            $set('client_nom', trim($client->nom . ' ' . $client->postnom . ' ' . $client->prenom));
 
-                            // Cherche le cycle actif du client
-                            $cycleOuvert = Cycle::where('client_id', $client->id)
-                                ->where('statut', 'ouvert')
-                                ->latest('id')
-                                ->first();
+            // Si une devise a déjà été choisie, chercher le cycle correspondant
+            $selectedDevise = $get('devise');
+            if ($selectedDevise) {
+                $cycle = Cycle::where('client_id', $client->id)
+                    ->where('devise', $selectedDevise)
+                    ->where('statut', 'ouvert')
+                    ->latest('id')
+                    ->first();
 
-                            if ($cycleOuvert) {
-                                $set('cycle_id', $cycleOuvert->id);
-                                $set('devise', $cycleOuvert->devise);
-                                $set('montant', $cycleOuvert->solde_initial);
+                if ($cycle) {
+                    $set('cycle_id', $cycle->id);
+                    $set('montant', $cycle->solde_initial);
+                    $set('devise', $cycle->devise);
+                } else {
+                    $set('cycle_id', null);
+                    $set('montant', null);
 
-                                Notification::make()
-                                    ->title('Cycle trouvé')
-                                    ->body("Le client possède un cycle ouvert (#{$cycleOuvert->numero_cycle}).")
-                                    ->success()
-                                    ->send();
-                            } else {
-                                $set('cycle_id', null);
-                                $set('devise', null);
-                                $set('montant', null);
-
-                                Notification::make()
-                                    ->title('Aucun cycle ouvert')
-                                    ->body("Ce client n’a aucun cycle actif. Veuillez créer un nouveau cycle avant d’enregistrer une épargne.")
-                                    ->danger()
-                                    ->send();
-                            }
-                        }
-                    }),
+                    Notification::make()
+                        ->title('Aucun cycle ouvert')
+                        ->body("Ce client n’a aucun cycle ouvert pour la devise {$selectedDevise}.")
+                        ->danger()
+                        ->send();
+                }
+            }
+        }
+    }),
 
                 TextInput::make('client_nom')
                     ->label('Nom complet')
@@ -81,7 +82,7 @@ class EpargneForm
                 TextInput::make('agent_nom')
                     ->label('Nom de l’agent')
                     ->disabled()
-                    ->dehydrated(), // ENVOIE malgré disabled
+                    ->dehydrated(), 
 
                 // Cycle
                 Select::make('cycle_id')
@@ -89,19 +90,45 @@ class EpargneForm
                     ->options(Cycle::all()->pluck('numero_cycle', 'id'))
                     ->disabled()
                     ->required()
-                    ->dehydrated(), // ENVOIE malgré disabled
+                    ->dehydrated(), 
 
                 TextInput::make('montant')
                     ->numeric()
-                    ->required(),
+                    ->required()
+                    ->disabled()
+                    ->dehydrated(),
 
                 Select::make('devise')
+                    ->label('Devise')
                     ->options(['USD' => 'USD', 'CDF' => 'CDF'])
-                    ->disabled()
                     ->required()
-                    ->dehydrated(), // ENVOIE malgré disabled
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $set('cycle_id', null);
+                        $set('montant', null);
 
-                Select::make('statut')
+                        $clientId = $get('client_id');
+                        if ($clientId) {
+                            $cycle = Cycle::where('client_id', $clientId)
+                                ->where('devise', $state)
+                                ->where('statut', 'ouvert')
+                                ->latest('id')
+                                ->first();
+
+                            if ($cycle) {
+                                $set('cycle_id', $cycle->id);
+                                $set('montant', $cycle->solde_initial);
+                                $set('devise', $cycle->devise);
+                            } else {
+                                Notification::make()
+                                    ->title('Aucun cycle ouvert')
+                                    ->body("Ce client n’a aucun cycle ouvert pour la devise {$state}.")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }
+                    }),
+                                Select::make('statut')
                     ->options([
                         'en_attente_dispatch' => 'En attente dispatch',
                         'en_attente_validation' => 'En attente validation',

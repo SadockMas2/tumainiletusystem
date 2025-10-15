@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Compte extends Model
 {
     protected $fillable = [
         'numero_membre',
-        'nom',
-        'postnom',
-        'prenom',
         'client_id',
         'numero_compte',
         'devise',
@@ -29,6 +27,9 @@ class Compte extends Model
         return $this->hasMany(Mouvement::class);
     }
 
+    protected $casts = [
+        'solde' => 'decimal:2'
+    ];
     protected static function boot()
 {
     parent::boot();
@@ -52,4 +53,12 @@ class Compte extends Model
     });
 }
 
+
+  public function credits(): HasMany
+    {
+        return $this->hasMany(Credit::class, 'compte_id'); // ou le nom correct de la clé étrangère
+    }
+
+    // Relation avec le client
+  
 }

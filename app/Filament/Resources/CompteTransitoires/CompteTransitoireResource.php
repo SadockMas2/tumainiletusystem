@@ -19,9 +19,11 @@ class CompteTransitoireResource extends Resource
 {
     protected static ?string $model = CompteTransitoire::class;
 
- protected static string|BackedEnum|null $navigationIcon = "heroicon-o-arrows-right-left";
 
-     protected static string|UnitEnum|null $navigationGroup = '💰 Gestion financière';
+    protected static string|BackedEnum|null $navigationIcon = "heroicon-o-arrows-right-left";
+
+    protected static ?string $navigationLabel = 'Comptes Transitoires';
+    protected static string|UnitEnum|null $navigationGroup = '💳 Gestion des comptes';
 
     public static function form(Schema $schema): Schema
     {

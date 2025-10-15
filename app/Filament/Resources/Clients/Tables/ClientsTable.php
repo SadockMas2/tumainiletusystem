@@ -4,12 +4,16 @@ namespace App\Filament\Resources\Clients\Tables;
 
 use App\Models\TypeCompte;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ClientsTable
 {
@@ -38,32 +42,10 @@ class ClientsTable
                 TextColumn::make('type_client')->searchable(),
                 TextColumn::make('etat_civil')->searchable(),
                 TextColumn::make('type_compte')
-                            ->label('Type de compte')
-                            ->sortable()
-                            ->searchable(),
-            
-         
-
-                // ✅ ICI on affiche le type de compte lié
-            //  SelectColumn::make('type_compte')
-            //         ->label('Type de compte')
-            //         ->options(TypeCompte::pluck('designation', 'designation')->toArray())
-            //         ->searchable(),
+                    ->label('Type de compte')
+                    ->sortable()
+                    ->searchable(),
                 
-                   
-            
-                
-          
-            // SelectColumn::make('type_compte')
-            //     ->relationship('typeCompte', 'designation') // nom de la relation Eloquent
-            //     ->label('Type de compte')
-            //     ->sortable()
-            //     ->searchable(),
-
-                    
-
-
-
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -74,10 +56,39 @@ class ClientsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
-            ->recordActions([
-                EditAction::make(),
+            ->headerActions([
+                CreateAction::make()
+                    ->label('Créer un client')
+                    ->visible(function () {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        // Vérifier la permission de création
+                        return $user?->can('create', \App\Models\Client::class); // Remplacez par votre modèle Client
+                    }),
             ])
-            ->toolbarActions([
+            ->recordActions([
+                ViewAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('view', $record);
+                    }),
+
+                EditAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('update', $record);
+                    }),
+
+                DeleteAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('delete', $record);
+                    }),
+            ])
+          ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

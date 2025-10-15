@@ -15,5 +15,10 @@ class CreateUser extends CreateRecord
         $user = \Illuminate\Support\Facades\Auth::user();
         return $user && $user->hasRole('Admin');
     }
+
+     protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
 

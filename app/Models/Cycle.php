@@ -64,4 +64,6 @@ class Cycle extends Model
         $this->date_fin = now();
         $this->save();
     }
+
+    
 }

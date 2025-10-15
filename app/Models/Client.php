@@ -56,6 +56,16 @@ class Client extends Model
             return $this->hasMany(Compte::class);
         }
 
+        public function transactions()
+        {
+            return $this->hasMany(Transaction::class);
+        }
+
+        public function credits()
+        {
+            return $this->hasMany(Credit::class);
+        }
+
 
 
 }
