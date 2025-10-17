@@ -53,4 +53,13 @@ class GroupeSolidaireResource extends Resource
             'edit' => EditGroupeSolidaire::route('/{record}/edit'),
         ];
     }
+
+     public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        return $user && $user->can('view_groupesolidaire');
+    }
+
+    
 }

@@ -5,7 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\HeaderThemeSwitcher;
 use Filament\Navigation\MenuItem;
 use Filament\Actions\Action;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+// use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Navigation\UserMenuItem; // ✅ IMPORT CORRECT
 use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
@@ -86,7 +86,7 @@ class AdminPanelProvider extends PanelProvider
             ])
 
             ->plugins([
-               FilamentShieldPlugin::make()
+            //    FilamentShieldPlugin::make()
             ]); // ← Ajouter cette ligne
     }
 }

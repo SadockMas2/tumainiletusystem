@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class UserResource extends Resource
@@ -56,6 +57,37 @@ class UserResource extends Resource
             'create' => CreateUser::route('/create'),
             'edit' => EditUser::route('/{record}/edit'),
         ];
+    }
+
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('view_user');
+    }
+
+    public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_user');
+    }
+
+
+    public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_user');
+    }
+
+    
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_user');
     }
 
       

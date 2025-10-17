@@ -30,6 +30,10 @@ class ClientsTable
                 TextColumn::make('prenom')->searchable(),
                 TextColumn::make('date_naissance')->date()->sortable(),
                 TextColumn::make('email')->label('Email')->searchable(),
+                TextColumn::make('image')
+                    ->label('Photo du membre'),
+
+
                 TextColumn::make('telephone')->searchable(),
                 TextColumn::make('adresse')->searchable(),
                 TextColumn::make('activites')->searchable(),
@@ -45,6 +49,9 @@ class ClientsTable
                     ->label('Type de compte')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('signature')
+                    ->label('Signature'),
+
                 
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -57,6 +64,9 @@ class ClientsTable
             ])
             ->filters([])
             ->headerActions([
+                
+
+                
               
             ])
             ->recordActions([

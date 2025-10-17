@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class GroupeSolidaireCompteResource extends Resource
@@ -53,5 +54,12 @@ class GroupeSolidaireCompteResource extends Resource
             'create' => CreateGroupeSolidaireCompte::route('/create'),
             'edit' => EditGroupeSolidaireCompte::route('/{record}/edit'),
         ];
+    }
+
+     public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('view_groupesolidairecompte');
     }
 }

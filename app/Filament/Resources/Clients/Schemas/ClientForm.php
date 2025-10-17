@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Clients\Schemas;
 
 use App\Models\TypeCompte;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -29,6 +30,13 @@ class ClientForm
                         TextInput::make('prenom')->required(),
                         DatePicker::make('date_naissance')->label('Date de naissance'),
                         TextInput::make('email')->label('Email')->email()->required(),
+                        FileUpload::make('image')
+                            ->label('Image')
+                            ->image()
+                            ->directory('clients')
+                            ->avatar()
+                            ->maxSize(2048),
+                    
                         TextInput::make('telephone')->label('Téléphone')->tel()->required(),
 
                            Select::make('activites')
@@ -147,6 +155,13 @@ class ClientForm
                             ])
                             ->searchable()
                             ->required(),
+                        FileUpload::make('signature')
+                            ->label('Image')
+                            ->image()
+                            ->directory('clients')
+                            ->avatar()
+                            ->maxSize(2048),
+                    
                         TextInput::make('identifiant_national')
                             ->label('Identifiant national')
                             ->columnSpan(2)

@@ -40,14 +40,17 @@ return [
     | Supported: "session"
     |
     */
-
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
 
+    'filament' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+],
     /*
     |--------------------------------------------------------------------------
     | User Providers

@@ -40,7 +40,7 @@ class ClientResource extends Resource
     {
          /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return $user && $user->can('creer_compte_membre');
+        return $user && $user->can('view_users');
     }
 
     public static function form(Schema $schema): Schema
@@ -72,29 +72,8 @@ class ClientResource extends Resource
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return $user && $user->can('creer_compte_membre');
-    }
-
-    public static function canCreate(): bool
-    {
-        /** @var \App\Models\User|null $user */
-        $user = Auth::user();
-        return $user && $user->can('creer_compte_membre');
-    }
-
-
-    public static function canEdit($record = null): bool
-    {
-          /** @var \App\Models\User|null $user */
-        $user = Auth::user();
-        return $user && $user->can('creer_compte_membre');
+        return $user && $user->can('view_client');
     }
 
     
-    public static function canDelete($record = null): bool
-    {
-          /** @var \App\Models\User|null $user */
-        $user = Auth::user();
-        return $user && $user->can('creer_compte_membre');
-    }
 }

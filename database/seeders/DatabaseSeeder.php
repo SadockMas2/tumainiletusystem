@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,28 +11,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //         // User::factory(10)->create();
-        // // User::factory()->create([
-        // //     'name' => 'Test',
-        // //     'prenom' => 'User',
-        // //     'email' => 'test@example.com',
-        // //     'login' => 'testuser',
-        // //     'password' => bcrypt('password'),
-        // //     'idprofil' => 1,
-        // //     'status' => 'actif',
-        // ]);
-
-        $this->call(TypeComptesSeeder::class);
         $this->call([
+            TypeComptesSeeder::class,
+            // RolesAndPermissionsSeeder::class,
+              
+            PermissionsSetupSeeder::class,  // D'abord créer les rôles
+            // NOTE: NE PAS appeler SuperAdminSeeder ici
+            // Il doit être appelé APRÈS shield:generate --all
+        ]);
 
-    RolesAndPermissionsSeeder::class, // d’abord les rôles & permissions
-    SuperAdminSeeder::class,     
-    FixPermissionsFormatSeeder::class,     // puis le super admin
-    ]);
-
-
-        
-
+        $this->command->info('');
+        $this->command->info('🚀 ÉTAPES SUIVANTES:');
+        $this->command->info('1. Exécutez: php artisan shield:generate --all');
+        $this->command->info('2. Exécutez: php artisan db:seed --class=SuperAdminSeeder');
+        $this->command->info('3. Testez: http://localhost/admin/shield/roles');
+        $this->command->info('');
     }
-    
 }

@@ -25,6 +25,8 @@ class Client extends Model
         'type_compte',
         'activites',
         'etat_civil',
+        'image',
+        'signature'
         
         
     ];
