@@ -20,24 +20,28 @@ class CreateCycle extends CreateRecord
 
         // 🔹 Mettre à jour ou créer le compte spécial selon la devise
         $compte = CompteSpecial::firstOrCreate(
-            ['devise' => $cycle->devise], // condition : devise
-            ['solde' => 0]                // valeur par défaut
+            ['devise' => $cycle->devise],
+            [
+                'nom' => 'Compte Spécial ' . $cycle->devise,
+                'solde' => 0
+            ]
         );
 
         // 🔹 Ajouter le montant au compte
         $compte->increment('solde', $montant);
 
-        // 🔹 Ajouter un enregistrement dans l’historique
+        // 🔹 Ajouter un enregistrement dans l'historique (SANS description pour l'instant)
         HistoriqueCompteSpecial::create([
             'cycle_id'   => $cycle->id,
-            'client_nom' => $cycle->client_nom, // nom du client pour affichage
+            'client_nom' => $cycle->client_nom,
             'montant'    => $montant,
             'devise'     => $cycle->devise,
-            // 'description'=> 'Ouverture du cycle',
+            'type_operation' => 'depot_initial_cycle',
+            // 'description' => 'Dépôt initial pour ouverture du cycle #' . $cycle->numero_cycle, // ⬅️ COMMENTÉ TEMPORAIREMENT
         ]);
     }
 
-        protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }

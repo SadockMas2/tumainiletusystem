@@ -20,7 +20,7 @@ class CompteSpecialResource extends Resource
     protected static ?string $model = CompteSpecial::class;
 
     protected static ?string $navigationLabel = 'Compte TUMAINI-LETU';
-    protected static string|UnitEnum|null $navigationGroup = '💳 Gestion des comptes';
+    protected static string|UnitEnum|null $navigationGroup = '💳 COMPTE SPECIAL TUMAINI';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
 
 

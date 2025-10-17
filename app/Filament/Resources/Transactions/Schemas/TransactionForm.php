@@ -15,32 +15,56 @@ class TransactionForm
             ->components([
                 Select::make('type')
                     ->options([
-            'approvisionnement' => 'Approvisionnement',
-            'decaissement' => 'Decaissement',
-            'credit' => 'Credit',
-            'remboursement' => 'Remboursement',
-        ])
+                        'approvisionnement' => 'Approvisionnement',
+                        'decaissement' => 'Décaissement',
+                        'credit' => 'Crédit',
+                        'remboursement' => 'Remboursement',
+                    ])
                     ->required(),
-                TextInput::make('source_type')
+                Select::make('source_type')
+                    ->label('Source')
+                    ->options([
+                        'App\Models\CompteBancaire' => 'Compte Bancaire',
+                        'App\Models\Coffre' => 'Coffre',
+                        'App\Models\CaisseComptable' => 'Caisse Comptable',
+                        'App\Models\CaisseJournaliere' => 'Caisse Journalière',
+                    ])
                     ->required(),
-                TextInput::make('source_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('destination_type')
+
+                // TextInput::make('source_id')
+                //     ->label('ID de la source')
+                //     ->required(),
+
+                select::make('destination_type')
+                    ->label('Destination')
+                    ->options([
+                        'App\Models\CompteBancaire' => 'Compte Bancaire',
+                        'App\Models\Coffre' => 'Coffre',
+                        'App\Models\CaisseComptable' => 'Caisse Comptable',
+                        'App\Models\CaisseJournaliere' => 'Caisse Journalière',
+                        'App\Models\Client' => 'Client',
+                    ])
                     ->required(),
-                TextInput::make('destination_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('membre_id')
-                    ->numeric(),
+
+                // TextInput::make('destination_id')
+                //     ->label('ID de la destination')
+                //     ->required(),
+
+                Select::make('client_id')
+                    ->label('Client')
+                    ->relationship('client', 'nom') // si tu as une relation client
+                    ->searchable()
+                    ->visible(fn (callable $get) => in_array($get('type'), ['credit', 'remboursement'])),
+
                 TextInput::make('montant')
-                    ->required()
-                    ->numeric(),
-                Select::make('devise')
-                    ->options(['CDF' => 'C d f', 'USD' => 'U s d'])
+                    ->numeric()
                     ->required(),
-                Textarea::make('description')
-                    ->columnSpanFull(),
+
+                Select::make('devise')
+                    ->options(['CDF' => 'CDF', 'USD' => 'USD'])
+                    ->required(),
+
+                Textarea::make('description'),
             ]);
     }
 }

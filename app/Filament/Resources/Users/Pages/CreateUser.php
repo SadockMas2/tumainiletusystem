@@ -9,16 +9,14 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-        protected function canView(): bool
-    {
-        /** @var \App\Models\User $user */
-        $user = \Illuminate\Support\Facades\Auth::user();
-        return $user && $user->hasRole('Admin');
-    }
+      
 
      protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
+
+
+    
 }
 

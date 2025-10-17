@@ -20,4 +20,6 @@ class CaisseComptable extends Model
     {
         return $this->morphMany(Transaction::class, 'destination');
     }
+
+    
 }

@@ -29,7 +29,6 @@ class UsersTable
                 ImageColumn::make('image')
                     ->label('Photo de profil'),
 
-                // ✅ Affiche le rôle Spatie (un utilisateur peut en avoir plusieurs)
                 TextColumn::make('roles.name')
                     ->label('Rôles')
                     ->badge()
@@ -54,7 +53,7 @@ class UsersTable
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -21,7 +21,7 @@ class CompteResource extends Resource
 
       protected static ?string $navigationLabel = 'Compte membre';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static string|UnitEnum|null $navigationGroup = '💳 Gestion des comptes';
+    protected static string|UnitEnum|null $navigationGroup =  '👨‍💼 GESTION DES MEMBRES';
 
        public static function getNavigationBadge(): ?string
     {

@@ -21,7 +21,7 @@ class DispatchResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-     protected static string|UnitEnum|null $navigationGroup = '💰 Gestion financière';
+     protected static string|UnitEnum|null $navigationGroup = '💰 EPARGNES';
 
     public static function form(Schema $schema): Schema
     {

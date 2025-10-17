@@ -18,17 +18,11 @@ class TransactionsTable
                     ->badge(),
                 TextColumn::make('source_type')
                     ->searchable(),
-                TextColumn::make('source_id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('destination_type')
                     ->searchable(),
-                TextColumn::make('destination_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('membre_id')
-                    ->numeric()
-                    ->sortable(),
+
+                TextColumn::make('client.nom')->label('Client'),
+            
                 TextColumn::make('montant')
                     ->numeric()
                     ->sortable(),

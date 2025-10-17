@@ -6,6 +6,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -39,16 +40,16 @@ class GroupeSolidairesTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('voir_membres')
+                   Action::make('voir_membres')
                     ->label('Voir les membres')
                     ->button()
                     ->color('primary')
                     ->modalHeading(fn ($record) => "Membres du groupe : {$record->nom_groupe}")
-                    ->modalContent(fn ($record) => view('filament.tables.group-members-infolist.blade', [
+                    ->modalContent(fn ($record) => view('filament.tables.group-members', [
                         'record' => $record,
                         'membres' => $record->membres,
                     ]))
-                    ->modalButton(false),
+                    ->modalCancelActionLabel('Fermer'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

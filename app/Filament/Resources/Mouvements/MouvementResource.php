@@ -22,7 +22,7 @@ class MouvementResource extends Resource
     protected static ?string $navigationLabel = 'Mouvements-Comptes';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
 
-    protected static string|UnitEnum|null $navigationGroup = '💳 Gestion des comptes';
+    protected static string|UnitEnum|null $navigationGroup = '👨‍💼 GESTION DES MEMBRES';
    
 
 

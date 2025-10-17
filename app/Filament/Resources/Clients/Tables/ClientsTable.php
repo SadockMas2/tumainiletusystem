@@ -57,36 +57,10 @@ class ClientsTable
             ])
             ->filters([])
             ->headerActions([
-                CreateAction::make()
-                    ->label('Créer un client')
-                    ->visible(function () {
-                        /** @var \App\Models\User $user */
-                        $user = Auth::user();
-                        // Vérifier la permission de création
-                        return $user?->can('create', \App\Models\Client::class); // Remplacez par votre modèle Client
-                    }),
+              
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->visible(function ($record) {
-                        /** @var \App\Models\User $user */
-                        $user = Auth::user();
-                        return $user?->can('view', $record);
-                    }),
-
-                EditAction::make()
-                    ->visible(function ($record) {
-                        /** @var \App\Models\User $user */
-                        $user = Auth::user();
-                        return $user?->can('update', $record);
-                    }),
-
-                DeleteAction::make()
-                    ->visible(function ($record) {
-                        /** @var \App\Models\User $user */
-                        $user = Auth::user();
-                        return $user?->can('delete', $record);
-                    }),
+               
             ])
           ->toolbarActions([
                 BulkActionGroup::make([

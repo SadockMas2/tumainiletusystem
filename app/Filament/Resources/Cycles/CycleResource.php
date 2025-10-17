@@ -21,9 +21,9 @@ class CycleResource extends Resource
 
  protected static string|BackedEnum|null $navigationIcon = "heroicon-o-archive-box-arrow-down";
 
-        protected static ?string $navigationLabel = 'Creation des cycles';
+        protected static ?string $navigationLabel = 'Cycles';
 
-     protected static string|UnitEnum|null $navigationGroup = '💰 Gestion financière';
+     protected static string|UnitEnum|null $navigationGroup = '💰 EPARGNES';
 
     public static function form(Schema $schema): Schema
     {

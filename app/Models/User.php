@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Panel;
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,10 +13,13 @@ use App\Models\ProfilType;
 
 
 
-class User extends Authenticatable
+class User extends Authenticatable 
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable ,  HasRoles;
+
+       protected $guard_name = 'filament';
+
 
     /**
      * The attributes that are mass assignable.
@@ -58,5 +63,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo(ProfilType::class, 'profil_type_id');
     }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // ou votre logique d'accès
+    }
+
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(\Spatie\Permission\Models\Role::class);
+    // }
+
+    // public function permissions()
+    // {
+    //     return $this->belongsToMany(\Spatie\Permission\Models\Permission::class);
+    // }
 
 }

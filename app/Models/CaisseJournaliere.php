@@ -9,7 +9,9 @@ class CaisseJournaliere extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['responsable', 'devise', 'solde'];
+    protected $table = 'caisse_journalieres';
+
+    protected $fillable = ['nom_caisse', 'devise', 'solde'];
 
     public function transactionsSource()
     {
@@ -20,5 +22,7 @@ class CaisseJournaliere extends Model
     {
         return $this->morphMany(Transaction::class, 'destination');
     }
+
+    
 }
 

@@ -11,20 +11,25 @@ class SuperAdminSeeder extends Seeder
     public function run()
     {
         // Vérifie si un utilisateur Admin existe déjà
-        if (User::where('email', 'admin@domain.com')->doesntExist()) {
-            
-            $admin = User::create([
+        $user = User::where('email', 'admintumainiletu@gmail.com')->first();
+        
+        if (!$user) {
+            $user = User::create([
                 'name' => 'Super Admin',
                 'email' => 'admintumainiletu@gmail.com',
-                'password' => bcrypt('Admin123!'), // mot de passe initial à changer
+                'password' => bcrypt('Admin123!'),
             ]);
+            $this->command->info('Super Admin créé.');
+        }
 
-            // Assigner le rôle Admin
-            $admin->assignRole('Admin');
-
-            $this->command->info('Super Admin créé avec email admintumainiletu@gmail.com et mot de passe Admin123!');
+        // Assigner le rôle super_admin
+        $superAdminRole = Role::where('name', 'super_admin')->where('guard_name', 'filament')->first();
+        
+        if ($superAdminRole) {
+            $user->syncRoles([$superAdminRole]);
+            $this->command->info('Rôle super_admin assigné avec succès.');
         } else {
-            $this->command->info('Super Admin existe déjà.');
+            $this->command->error('Le rôle super_admin n\'existe pas!');
         }
     }
 }

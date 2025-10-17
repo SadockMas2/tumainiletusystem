@@ -33,26 +33,7 @@ class CompteSpecialsTable
                 //
             ])
             ->recordActions([
-                    ViewAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('view', $record);
-                        }),
-
-                    EditAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('update', $record);
-                        }),
-
-                    DeleteAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('delete', $record);
-                        }),
+                   
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -30,10 +30,10 @@ class PermissionResource extends Resource
         return PermissionsTable::configure($table);
     }
 
-        public static function shouldRegisterNavigation(): bool
-    {
-        return false; // Cacher les resources originales
-    }
+    //     public static function shouldRegisterNavigation(): bool
+    // {
+    //     return false; // Cacher les resources originales
+    // }
 
     public static function getRelations(): array
     {

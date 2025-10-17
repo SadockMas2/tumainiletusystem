@@ -22,7 +22,7 @@ class ClientResource extends Resource
     // ✅ Navigation
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Membres';
-     protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Gestion des membres';
+     protected static string|UnitEnum|null $navigationGroup = '👨‍💼 GESTION DES MEMBRES';
 
        public static function getNavigationBadge(): ?string
     {

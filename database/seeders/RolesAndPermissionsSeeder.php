@@ -10,50 +10,41 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Permissions
-        $permissions = [
-            'creer_compte_membre',
-            'gerer_remboursement',
-            'gestion_batch',
-            'postage_credit',
-            'effectuer_depot',
-            'effectuer_retrait',
-            'verifier_solde',
-            'extraire_rapport_caisse',
-            'passer_operations_logistique',
-            'enregistrer_operation_coffre',
-            'extraire_operations_coffre',
-            'debourser_credit',
-            'autoriser_retrait',
-            'paiement_salaire',
-            'acces_rapports',
-            'dispatching',
-            'extraire_rapport_collecte',
-            'extraire_rapport_membres',
-            'extraire_tous_rapports',
+        // Nettoyer les anciens rôles et permissions
+        Role::query()->delete();
+        Permission::query()->delete();
+
+        // Créer le rôle super_admin
+        $superAdminRole = Role::create([
+            'name' => 'super_admin', 
+            'guard_name' => 'filament'
+        ]);
+
+        // Créer les autres rôles
+        $roles = [
+            'Admin',
+            'MembresODP',
+            'Caissiere', 
+            'Comptable',
+            'ChefBureau',
+            'Financier',
+            'AgentCollecteur',
+            'ConseillerMembres',
+            'ControleurAuditeur',
+            'ConseilAdministration',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        foreach ($roles as $roleName) {
+            Role::create([
+                'name' => $roleName, 
+                'guard_name' => 'filament'
+            ]);
         }
 
-        // Roles et attribution des permissions
-        $rolesPermissions = [
-            'Admin' => $permissions, // Super admin a toutes les permissions
-            'MembresODP' => ['creer_compte_membre','gerer_remboursement','gestion_batch','postage_credit'],
-            'Caissiere' => ['effectuer_depot','effectuer_retrait','verifier_solde','extraire_rapport_caisse'],
-            'Comptable' => ['passer_operations_logistique','enregistrer_operation_coffre','extraire_operations_coffre'],
-            'ChefBureau' => ['debourser_credit','autoriser_retrait'],
-            'Financier' => ['paiement_salaire','acces_rapports'],
-            'AgentCollecteur' => ['dispatching','extraire_rapport_collecte'],
-            'ConseillerMembres' => ['extraire_rapport_membres'],
-            'ControleurAuditeur' => ['extraire_tous_rapports'],
-            'ConseilAdministration' => ['extraire_tous_rapports'],
-        ];
+        // Assigner toutes les permissions à super_admin
+        $allPermissions = Permission::where('guard_name', 'filament')->get();
+        $superAdminRole->syncPermissions($allPermissions);
 
-        foreach ($rolesPermissions as $roleName => $perms) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
-            $role->syncPermissions($perms);
-        }
+        $this->command->info('Rôles créés avec succès. super_admin a toutes les permissions.');
     }
 }

@@ -13,6 +13,12 @@ return [
     |
     */
 
+    'filament' => [ // ← Ce guard doit exister
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),

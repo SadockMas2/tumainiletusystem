@@ -20,7 +20,7 @@ use UnitEnum;
 
 class TypeCompteResource extends Resource
 {
-        use HasRoleBasedAccess;
+       
     protected static ?string $model = TypeCompte::class;
 
       protected static ?string $navigationLabel = ' Type de Compte ';
@@ -67,25 +67,5 @@ class TypeCompteResource extends Resource
         ];
     }
 
-      public static function afterCreate($record, array $data): void
-        {
-            if (!empty($data['roles'])) {
-                $record->syncRoles($data['roles']);
-            }
-
-            if (!empty($data['permissions'])) {
-                $record->syncPermissions($data['permissions']);
-            }
-        }
-
-         public static function afterSave($record, array $data): void
-        {
-            if (!empty($data['roles'])) {
-                $record->syncRoles($data['roles']);
-            }
-
-            if (!empty($data['permissions'])) {
-                $record->syncPermissions($data['permissions']);
-            }
-        }
+   
 }

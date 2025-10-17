@@ -26,8 +26,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(TypeComptesSeeder::class);
         $this->call([
+
     RolesAndPermissionsSeeder::class, // d’abord les rôles & permissions
-    SuperAdminSeeder::class,          // puis le super admin
+    SuperAdminSeeder::class,     
+    FixPermissionsFormatSeeder::class,     // puis le super admin
     ]);
 
 

@@ -7,7 +7,6 @@ use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
-use App\Filament\Traits\HasRoleBasedAccess;
 use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -17,21 +16,17 @@ use UnitEnum;
 
 class UserResource extends Resource
 {
-         use HasRoleBasedAccess;
+         
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Agents';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
-    protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Ressources Humaines';
+    protected static string|UnitEnum|null $navigationGroup = '👨‍💼 RESSOURCES HUMAINES';
 
      public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     } 
     
-      public static function shouldRegisterNavigation(): bool
-    {
-        return static::checkAccess();
-    }
 
     public static function form(Schema $schema): Schema
     {
@@ -63,27 +58,6 @@ class UserResource extends Resource
         ];
     }
 
-        // Méthode pour synchroniser les rôles et permissions après création/mise à jour
-        public static function afterCreate($record, array $data): void
-        {
-            if (!empty($data['roles'])) {
-                $record->syncRoles($data['roles']);
-            }
-
-            if (!empty($data['permissions'])) {
-                $record->syncPermissions($data['permissions']);
-            }
-        }
-
-         public static function afterSave($record, array $data): void
-        {
-            if (!empty($data['roles'])) {
-                $record->syncRoles($data['roles']);
-            }
-
-            if (!empty($data['permissions'])) {
-                $record->syncPermissions($data['permissions']);
-            }
-        }
+      
         
 }

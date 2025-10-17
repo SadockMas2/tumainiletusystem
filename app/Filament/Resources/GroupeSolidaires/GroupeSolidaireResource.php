@@ -22,7 +22,7 @@ class GroupeSolidaireResource extends Resource
   
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Groupes Solidaires';
-     protected static string|UnitEnum|null $navigationGroup = '👨‍💼 Gestion des membres';
+     protected static string|UnitEnum|null $navigationGroup =  '👨‍💼 GESTION DES MEMBRES';
 
         public static function getNavigationBadge(): ?string
     {

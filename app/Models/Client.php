@@ -66,6 +66,12 @@ class Client extends Model
             return $this->hasMany(Credit::class);
         }
 
+        // Ajouter cette méthode dans le modèle Client
+        public function getNomCompletAttribute()
+        {
+            return trim($this->nom . ' ' . $this->postnom . ' ' . $this->prenom);
+        }
+
 
 
 }
