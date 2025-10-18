@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CreditController;
+use App\Models\Mouvement;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,3 +25,10 @@ Route::prefix('credits')->group(function () {
 // Routes pour les comptes
 Route::get('comptes/{compte_id}/details', [CompteController::class, 'details'])->name('comptes.details');
 Route::get('comptes', [CompteController::class, 'index'])->name('comptes.index');
+
+
+
+
+Route::get('/mouvement/{mouvement}/bordereau', function (Mouvement $mouvement) {
+    return view('bordereau-mouvement', compact('mouvement'));
+})->name('mouvement.bordereau');

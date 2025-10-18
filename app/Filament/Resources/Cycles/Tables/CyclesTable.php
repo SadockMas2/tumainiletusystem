@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Cycles\Tables;
 
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class CyclesTable
 {
@@ -98,6 +100,18 @@ class CyclesTable
                         'ouvert' => 'Ouvert',
                         'clôturé' => 'Clôturé',
                     ]),
+            ])
+
+            ->headerActions([
+                Action::make('create_epargne')
+                    ->label('Creer un cycle')
+                    ->icon('heroicon-o-calendar-days')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_epargne');
+                    })
+                    ->url(route('filament.admin.resources.cycles.create')), // ✅ Correct pour création
             ])
             
             ->recordActions([

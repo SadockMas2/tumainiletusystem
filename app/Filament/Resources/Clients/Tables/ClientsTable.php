@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Clients\Tables;
 
 use App\Models\TypeCompte;
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -63,12 +65,19 @@ class ClientsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
-            ->headerActions([
-                
-
-                
-              
+              ->headerActions([
+                Action::make('clients.create')
+                ->Label('Ajouter un membre')
+                ->icon('heroicon-o-user-plus')
+                ->visible(function () {
+                    /** @var User|null $user */
+                    $user = Auth::user();
+                    return $user && $user->can('create_client');
+                })
+                 ->url(route('filament.admin.resources.clients.create')),
             ])
+
+            
             ->recordActions([
                
             ])

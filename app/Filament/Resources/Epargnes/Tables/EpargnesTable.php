@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Epargnes\Tables;
 
+use App\Models\User;
 use Dom\Text;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -11,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Illuminate\Support\Facades\Auth;
 
 class EpargnesTable
 {
@@ -91,6 +94,18 @@ class EpargnesTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+
+            ->headerActions([
+                Action::make('create_epargne')
+                    ->label('Epargner')
+                    ->icon('heroicon-o-currency-dollar')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_epargne');
+                    })
+                    ->url(route('filament.admin.resources.epargnes.create')), // ✅ Correct pour création
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type_epargne')

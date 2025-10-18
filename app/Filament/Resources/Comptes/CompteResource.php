@@ -55,10 +55,33 @@ class CompteResource extends Resource
         ];
     }
 
-     public static function canViewAny(): bool
+    
+        public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_compte');
+    }
+
+    // 🔒 Contrôle des accès aux actions
+    public static function canViewAny(): bool
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
         return $user && $user->can('view_compte');
+    }
+
+     public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_ccmpte');
+    }
+
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('delete_compte');
     }
 }

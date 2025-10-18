@@ -8,11 +8,13 @@ use App\Filament\Resources\GroupeSolidaires\Pages\ListGroupeSolidaires;
 use App\Filament\Resources\GroupeSolidaires\Schemas\GroupeSolidaireForm;
 use App\Filament\Resources\GroupeSolidaires\Tables\GroupeSolidairesTable;
 use App\Models\GroupeSolidaire;
+
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class GroupeSolidaireResource extends Resource
@@ -57,9 +59,33 @@ class GroupeSolidaireResource extends Resource
      public static function canViewAny(): bool
     {
         /** @var \App\Models\User|null $user */
-        $user = \Illuminate\Support\Facades\Auth::user();
+        $user = Auth::user();
         return $user && $user->can('view_groupesolidaire');
     }
 
+   
+        public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_groupesolidaire');
+    }
+
+    // 🔒 Contrôle des accès aux actions
+
+
+     public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_groupesolidaire');
+    }
+
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('delete_groupesolidaire');
+    }
     
 }

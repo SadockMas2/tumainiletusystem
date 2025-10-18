@@ -4,6 +4,7 @@ namespace App\Filament\Resources\GroupeSolidaireComptes\Tables;
 
 use App\Filament\Resources\Mouvements\MouvementResource;
 use App\Models\Compte;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -16,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class GroupeSolidaireComptesTable
 {
@@ -100,6 +102,18 @@ class GroupeSolidaireComptesTable
                     }),
 
 
+            ])
+
+            ->headerActions([
+                Action::make('create_compte')
+                    ->label('Ouvrir un compte du groupe')
+                    ->icon('heroicon-o-user-plus')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_compte');
+                    })
+                    ->url(route('filament.admin.resources.groupe-solidaire-comptes.create')), // ✅ Correct pour création
             ])
            
             ->recordActions([

@@ -137,7 +137,7 @@
                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
                     <label class="block text-lg font-semibold text-gray-700 mb-4">
                         <i class="fas fa-percentage mr-2 text-orange-500"></i>
-                        Taux d'Intérêt Annuel
+                        Taux d'Intérêt 
                     </label>
                     
                     <div class="relative">
@@ -149,8 +149,8 @@
                             name="taux_interet" 
                             step="0.1"
                             min="0.1"
-                            max="50"
-                            value="5.0"
+                            max="90"
+                            value="6.72"
                             class="form-input block w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
                             placeholder="5.0"
                             required
@@ -159,7 +159,7 @@
                     
                     <div class="mt-3 text-sm text-gray-500">
                         <i class="fas fa-info-circle mr-1 text-blue-500"></i>
-                        Taux d'intérêt annuel (entre 0.1% et 50%)
+                        Taux d'intérêt  (entre 0.1% et 6,72%)
                     </div>
                 </div>
 
@@ -189,7 +189,7 @@
                     
                     <div class="mt-3 text-sm text-gray-500">
                         <i class="fas fa-info-circle mr-1 text-blue-500"></i>
-                        Durée maximale recommandée: 36 mois
+                        Durée maximale recommandée: 12 mois
                     </div>
                 </div>
 
@@ -220,7 +220,7 @@
                     <div class="flex items-start">
                         <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-3"></i>
                         <div class="text-sm text-yellow-800">
-                            <strong>Important:</strong> Le taux d'intérêt est annuel. 
+                            <strong>Important:</strong>Le remboursement se fait chaque 7 jours après !!!
                             Assurez-vous de votre capacité de remboursement avant de soumettre votre demande.
                         </div>
                     </div>
@@ -258,7 +258,7 @@
         <!-- Footer -->
         <div class="text-center mt-8">
             <p class="text-white/60 text-sm">
-                &copy; 2024 Tumaini Letu System. Service financier de confiance.
+                &copy; 2025 Tumaini Letu System. Service financier de confiance.
             </p>
         </div>
     </div>

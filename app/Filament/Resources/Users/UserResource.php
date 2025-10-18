@@ -87,7 +87,7 @@ class UserResource extends Resource
     {
           /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return $user && $user->can('edit_user');
+        return $user && $user->can('delete_user');
     }
 
       

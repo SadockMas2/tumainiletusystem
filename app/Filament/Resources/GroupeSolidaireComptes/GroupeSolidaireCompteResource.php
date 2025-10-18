@@ -30,6 +30,11 @@ class GroupeSolidaireCompteResource extends Resource
     {
         return parent::getEloquentQuery()->where('type_compte', 'groupe_solidaire');
     }
+
+      public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    } 
     public static function form(Schema $schema): Schema
     {
         return GroupeSolidaireCompteForm::configure($schema);
@@ -60,6 +65,31 @@ class GroupeSolidaireCompteResource extends Resource
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return $user && $user->can('view_groupesolidairecompte');
+        return $user && $user->can('view_compte');
+    }
+
+    
+        public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_compte');
+    }
+
+    // 🔒 Contrôle des accès aux actions
+
+
+     public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_compte');
+    }
+
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('delete_compte');
     }
 }

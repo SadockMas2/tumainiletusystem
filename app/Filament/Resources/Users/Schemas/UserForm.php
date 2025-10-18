@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Schemas\Components\FileUpload;
-use Filament\Schemas\Components\Select;
-use Filament\Schemas\Components\TextInput;
+
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Spatie\Permission\Models\Permission;
@@ -16,29 +18,29 @@ class UserForm
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label('Nom complet')
                     ->required()
                     ->maxLength(255),
 
-                \Filament\Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->label('Adresse email')
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
 
-                \Filament\Forms\Components\TextInput::make('password')
+                TextInput::make('password')
                     ->label('Mot de passe')
                     ->password()
                     ->required(fn ($operation) => $operation === 'create')
                     ->dehydrated(fn ($state) => filled($state))
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
                     ->maxLength(255),
 
                 Section::make('Photo de profil')
-                    ->components([
-                        \Filament\Forms\Components\FileUpload::make('image')
+                    ->schema([
+                        FileUpload::make('image')
                             ->label('Image')
                             ->image()
                             ->directory('users')
@@ -47,26 +49,30 @@ class UserForm
                     ]),
             
                 Section::make('Rôles et Permissions')
-                    ->components([
-                        \Filament\Forms\Components\Select::make('roles')
+                    ->schema([
+                        Select::make('roles')
                             ->label('Rôles')
                             ->multiple()
+                            ->relationship('roles', 'name')
                             ->options(fn () => Role::where('guard_name', 'filament')->pluck('name', 'id'))
                             ->preload()
                             ->searchable()
                             ->required()
                             ->loadingMessage('Chargement des rôles...')
-                            ->noSearchResultsMessage('Aucun rôle trouvé'),
+                            ->noSearchResultsMessage('Aucun rôle trouvé')
+                            ->dehydrated(true),
 
-                        \Filament\Forms\Components\Select::make('permissions')
+                        Select::make('permissions')
                             ->label('Permissions spécifiques')
                             ->multiple()
+                            ->relationship('permissions', 'name')
                             ->options(fn () => Permission::where('guard_name', 'filament')->pluck('name', 'id'))
                             ->preload()
                             ->searchable()
                             ->loadingMessage('Chargement des permissions...')
                             ->noSearchResultsMessage('Aucune permission trouvée')
-                            ->helperText('Permissions directes (en plus des permissions des rôles)'),
+                            ->helperText('Permissions directes (en plus des permissions des rôles)')
+                            ->dehydrated(true),
                     ]),
             ]);
     }

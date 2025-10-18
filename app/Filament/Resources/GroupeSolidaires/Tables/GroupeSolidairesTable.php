@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GroupeSolidaires\Tables;
 
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class GroupeSolidairesTable
 {
@@ -38,6 +40,19 @@ class GroupeSolidairesTable
             ->filters([
                 //
             ])
+
+             ->headerActions([
+                Action::make('create_groupesolidaire')
+                    ->label('Creer un groupe')
+                    ->icon('heroicon-o-user-plus')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_groupesolidaire');
+                    })
+                    ->url(route('filament.admin.resources.groupe-solidaires.create')), // ✅ Correct pour création
+            ])
+           
             ->recordActions([
                 EditAction::make(),
                    Action::make('voir_membres')

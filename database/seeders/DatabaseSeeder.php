@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
             TypeComptesSeeder::class,
             // RolesAndPermissionsSeeder::class,
               
-            PermissionsSetupSeeder::class,  // D'abord créer les rôles
+            PermissionsSetupSeeder::class, 
+            RolesAndPermissionsSeeder::class, 
+            SuperAdminSeeder::class,// D'abord créer les rôles
             // NOTE: NE PAS appeler SuperAdminSeeder ici
             // Il doit être appelé APRÈS shield:generate --all
         ]);

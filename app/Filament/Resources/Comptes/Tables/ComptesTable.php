@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Comptes\Tables;
 
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -39,29 +40,48 @@ class ComptesTable
             ->filters([
                 //
             ])
+            ->headerActions([
+                Action::make('create_compte')
+                    ->label('Ouvrir un compte Membre')
+                    ->icon('heroicon-o-user-plus')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_compte');
+                    })
+                    ->url(route('filament.admin.resources.comptes.create')),
+                
+                Action::make('create_compte_groupe')
+                    ->label('Ouvrir un compte du groupe')
+                    ->icon('heroicon-o-user-plus')
+                    ->visible(function () {
+                        /** @var User|null $user */
+                        $user = Auth::user();
+                        return $user && $user->can('create_compte');
+                    })
+                    ->url(route('filament.admin.resources.groupe-solidaire-comptes.create')),
+            ])
             ->recordActions([
-               
-                    ViewAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('view', $record);
-                        }),
+                ViewAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('view', $record);
+                    }),
 
-                    EditAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('update', $record);
-                        }),
+                EditAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('update', $record);
+                    }),
 
-                    DeleteAction::make()
-                        ->visible(function ($record) {
-                            /** @var \App\Models\User $user */
-                            $user = Auth::user();
-                            return $user?->can('delete', $record);
-                        }),
-               
+                DeleteAction::make()
+                    ->visible(function ($record) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        return $user?->can('delete', $record);
+                    }),
 
                 // Bouton "Demander un crédit"
                 Action::make('demande_credit')
@@ -110,7 +130,7 @@ class ComptesTable
                     }),
 
                 // Bouton "Voir détails"
-           Action::make('voir_details')
+                Action::make('voir_details')
                     ->label('Détails')
                     ->button()
                     ->color('secondary')

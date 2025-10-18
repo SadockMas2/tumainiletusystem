@@ -156,7 +156,7 @@ class ClientForm
                             ->searchable()
                             ->required(),
                         FileUpload::make('signature')
-                            ->label('Image')
+                            ->label('Signature')
                             ->image()
                             ->directory('clients')
                             ->avatar()
