@@ -39,7 +39,7 @@ class CycleForm
                     ])
                     ->columns(1),
 
-                Section::make('Sélection du Client ou Groupe')
+                Section::make('Sélection du Membre ou Groupe')
                     ->schema([
                         Select::make('client_id')
                             ->label('Client')
@@ -98,7 +98,7 @@ class CycleForm
                             }),
 
                         TextInput::make('client_nom')
-                            ->label('Nom Client/Groupe')
+                            ->label('Nom Membre/Groupe')
                             ->disabled()
                             ->dehydrated(),
 

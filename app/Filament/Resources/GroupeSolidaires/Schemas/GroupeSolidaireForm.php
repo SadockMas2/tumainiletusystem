@@ -52,7 +52,7 @@ class GroupeSolidaireForm
               Select::make('membres')
                     ->label('Membres du groupe')
                     ->multiple()
-                    ->minItems(5)
+                    ->minItems(1)
                     ->maxItems(15)
                     ->required()
                     ->options(Client::all()->mapWithKeys(function ($client) {

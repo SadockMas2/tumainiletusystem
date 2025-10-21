@@ -45,13 +45,13 @@ class MouvementsTable
             ])
 
             ->headerActions([
-                Action::make('create_mouvement')
+                Action::make('create_compte')
                     ->label('Depot / Retrait')
                     ->icon('heroicon-o-currency-dollar')
                     ->visible(function () {
                         /** @var User|null $user */
                         $user = Auth::user();
-                        return $user && $user->can('create_cycle');
+                        return $user && $user->can('create_compte');
                     })
                     ->url(route('filament.admin.resources.mouvements.create')),
             ])

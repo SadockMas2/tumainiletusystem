@@ -22,91 +22,56 @@ class CreditController extends Controller
     }
 
     // Stocker un nouveau crédit
-   public function store(Request $request)
-{
-    $request->validate([
-        'compte_id' => 'required|exists:comptes,id',
-        'montant' => 'required|numeric|min:1',
-        'duree' => 'required|integer|min:1|max:120',
-        'taux_interet' => 'required|numeric|min:0.1|max:50'
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $compte = Compte::findOrFail($request->compte_id);
-
-        $montant = (float) $request->montant;
-        $dureeMois = (int) $request->duree;
-        $taux = (float) $request->taux_interet;
-
-        // 🧮 Nombre total de semaines
-        $nbSemaines = $dureeMois * 4;
-
-        // 🧮 Annuité du capital par semaine
-        $annuite = $montant / $nbSemaines;
-
-        // Variables de calcul
-        $capitalRestant = $montant;
-        $totalInteret = 0;
-        $tableauRemboursements = [];
-
-        // 🧾 Boucle de calcul hebdomadaire
-        for ($i = 1; $i <= $nbSemaines; $i++) {
-            $interet = $capitalRestant * ($taux / 100);
-            $remboursement = $annuite + $interet;
-
-            $tableauRemboursements[] = [
-                'semaine' => $i,
-                'capital_restant' => round($capitalRestant, 2),
-                'interet' => round($interet, 2),
-                'remboursement_total' => round($remboursement, 2)
-            ];
-
-            $totalInteret += $interet;
-            $capitalRestant -= $annuite;
-        }
-
-        $montantTotal = $montant + $totalInteret;
-
-        // 💾 Enregistrement du crédit
-        $credit = Credit::create([
-            'compte_id' => $request->compte_id,
-            'client_id' => $compte->client_id,
-            'cycle_id' => 1,
-            'montant_principal' => $montant,
-            'taux_interet' => $taux,
-            'montant_total' => round($montantTotal, 2),
-            'devise' => $compte->devise,
-            'statut' => 'en_attente',
-            'statut_demande' => 'en_attente',
-            'date_octroi' => null,
-            'date_echeance' => null,
-            'date_demande' => now()
+    public function store(Request $request)
+    {
+        $request->validate([
+            'compte_id' => 'required|exists:comptes,id',
+            'montant' => 'required|numeric|min:1',
+            'duree' => 'required|integer|min:1|max:120',
+            'taux_interet' => 'required|numeric|min:0.1|max:50'
         ]);
 
-        DB::commit();
+        try {
+            DB::beginTransaction();
 
-        // 🔢 Sauvegarde possible du tableau (si tu veux créer un modèle `EcheanceCredit`)
-        // foreach ($tableauRemboursements as $ligne) {
-        //     EcheanceCredit::create([
-        //         'credit_id' => $credit->id,
-        //         'semaine' => $ligne['semaine'],
-        //         'montant_interet' => $ligne['interet'],
-        //         'montant_total' => $ligne['remboursement_total'],
-        //         'capital_restant' => $ligne['capital_restant']
-        //     ]);
-        // }
+            $compte = Compte::findOrFail($request->compte_id);
 
-        return redirect('/admin/comptes')
-            ->with('success', "Demande de crédit soumise avec succès ! Montant total à rembourser : " . round($montantTotal, 2) . " " . $compte->devise);
+            // Convertir les valeurs
+            $montantPrincipal = (float) $request->montant;
+            $duree = (int) $request->duree;
+            $tauxInteret = (float) $request->taux_interet;
+            
+            // Calculer le montant total avec intérêts
+            $montantTotal = $montantPrincipal * (1 + ($tauxInteret / 100));
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()->with('error', 'Erreur lors de la création du crédit : ' . $e->getMessage());
+            $credit = Credit::create([
+                'compte_id' => $request->compte_id,
+                'client_id' => $compte->client_id,
+                'cycle_id' => 1,
+                'montant_principal' => $montantPrincipal,
+                'taux_interet' => $tauxInteret,
+                'montant_total' => $montantTotal,
+                'devise' => $compte->devise,
+                'statut' => 'en_attente', // Statut initial
+                'statut_demande' => 'en_attente', // Demande en attente
+                'date_octroi' => null, // Sera défini lors de l'approbation
+                'date_echeance' => null, // Sera défini lors de l'approbation
+                'date_demande' => now()
+            ]);
+
+            DB::commit();
+
+            return redirect('/admin/comptes')
+                ->with('success', 'Demande de crédit soumise avec succès! Elle est maintenant en attente d\'approbation.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la création du crédit: ' . $e->getMessage())
+                ->withInput();
+        }
     }
-}
-
     // Formulaire pour payer un crédit
     public function payer($compte_id)
     {

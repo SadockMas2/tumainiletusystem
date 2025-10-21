@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class CompteTransitoireResource extends Resource
@@ -49,5 +50,36 @@ class CompteTransitoireResource extends Resource
             'create' => CreateCompteTransitoire::route('/create'),
             'edit' => EditCompteTransitoire::route('/{record}/edit'),
         ];
+    }
+
+           public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('view_comptetransitoire');
+    }
+
+            public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_comptetransitoire');
+    }
+
+    // 🔒 Contrôle des accès aux actions
+
+
+     public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_comptetransitoire');
+    }
+
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('delete_comptetransitoire');
     }
 }

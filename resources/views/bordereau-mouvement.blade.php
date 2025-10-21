@@ -59,6 +59,15 @@
             width: 200px;
             margin-left: auto;
         }
+
+          .signature1 {
+            margin-top: -8px;
+            text-align: left;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            width: 200px;
+            margin-right: auto;
+        }
         .montant-section {
             background-color: #f5f5f5;
             padding: 15px;
@@ -138,8 +147,8 @@
         <div class="header-info">
             <div><strong>Tumaini Letu asbl</strong></div>
             <div>Siège social 005, avenue du port, quartier les volcans - Goma - Rd Congo</div>
-            <div>RCCM : CD/LSH/RCCM/14 -B -1624 (NRC go63) - Id nat. : 05-K6500-N42165K</div>
-            <div>N° Impot: A0711202K - Tel : +243982618321</div>
+            <div>NUM BED : 14453756111</div>
+            <div> Tel : +243982618321</div>
             <div>Email : tumailetu@gmail.com</div>
         </div>
     </div>
@@ -197,7 +206,7 @@
         </div>
         
         <div class="content-line">
-            <strong>ID Client :</strong>
+            <strong>ID du Membre :</strong>
             <span>{{ $mouvement->compte->id_client ?? 'N/A' }}</span>
         </div>
     </div>
@@ -212,7 +221,11 @@
     </div>
 
     <div class="signature">
-        Signature
+        Signature de l'agent
+    </div>
+
+    <div class="signature1">
+        Signature du déposant
     </div>
 
     <div class="no-print" style="margin-top: 30px; text-align: center;">

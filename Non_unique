@@ -1,0 +1,1 @@
+"Index: {$index->Key_name}, Colonne: {$index->Column_name}, Unique: " . ($index- == 0 ? 'Oui' : 'Non') . "\n";

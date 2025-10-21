@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Epargnes;
 
+
 use App\Filament\Resources\Epargnes\Pages\CreateEpargne;
 use App\Filament\Resources\Epargnes\Pages\EditEpargne;
 use App\Filament\Resources\Epargnes\Pages\ListEpargnes;
@@ -61,7 +62,7 @@ class EpargneResource extends Resource
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return $user && $user->can('view_epargne');
+        return $user && $user->can('view_cycle');
     }
 
     

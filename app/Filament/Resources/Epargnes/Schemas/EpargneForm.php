@@ -13,6 +13,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class EpargneForm
 {
@@ -110,23 +111,8 @@ class EpargneForm
                     ])
                     ->columns(2),
 
-                Section::make('Agent Collecteur')
-                    ->schema([
-                        Select::make('user_id')
-                            ->label('Agent Collecteur')
-                            ->options(\App\Models\User::all()->pluck('name', 'id'))
-                            ->required()
-                            ->afterStateUpdated(function ($state, $set) {
-                                $user = \App\Models\User::find($state);
-                                $set('agent_nom', $user ? $user->name : null);
-                            }),
-
-                        TextInput::make('agent_nom')
-                            ->label('Nom de l\'agent')
-                            ->disabled()
-                            ->dehydrated(),
-                    ])
-                    ->columns(2),
+                Hidden::make('agent_nom')
+                         ->default(fn () => Auth::id()), 
 
                 Section::make('Détails de l\'Épargne')
                     ->schema([
@@ -197,15 +183,20 @@ class EpargneForm
                             ->disabled(fn ($get) => !$get('cycle_id'))
                             ->dehydrated(),
 
-                        Select::make('statut')
-                            ->options([
-                                'en_attente_dispatch' => 'En attente dispatch',
-                                'en_attente_validation' => 'En attente validation',
-                                'valide' => 'Validé',
-                                'rejet' => 'Rejeté',
-                            ])
-                            ->default('en_attente_dispatch')
-                            ->required(),
+                     Select::make('statut')
+                        ->options([
+                            'en_attente_dispatch' => 'En attente dispatch',
+                            'en_attente_validation' => 'En attente validation', 
+                            'valide' => 'Validé',
+                            'rejet' => 'Rejeté',
+                        ])
+                        ->default('en_attente_dispatch')
+                        ->required()
+                        ->disabled(fn ($get) => $get('type_epargne') === 'groupe_solidaire') // Désactivé pour les groupes
+                        ->hidden(fn ($get) => $get('type_epargne') === 'groupe_solidaire'), 
+
+                        Hidden::make('user_id')
+                        ->default(fn () => Auth::id()),
 
                         DateTimePicker::make('date_apport')
                             ->label('Date d\'apport')

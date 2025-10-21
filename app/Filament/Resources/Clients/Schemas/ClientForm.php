@@ -31,11 +31,13 @@ class ClientForm
                         DatePicker::make('date_naissance')->label('Date de naissance'),
                         TextInput::make('email')->label('Email')->email()->required(),
                         FileUpload::make('image')
-                            ->label('Image')
-                            ->image()
-                            ->directory('clients')
-                            ->avatar()
-                            ->maxSize(2048),
+                                ->label('Image')
+                                ->image()
+                                ->directory('clients')
+                                ->disk('public')  // ← Ajouter cette ligne
+                                ->visibility('public')
+                                ->avatar()
+                                ->maxSize(5120),
                     
                         TextInput::make('telephone')->label('Téléphone')->tel()->required(),
 
@@ -44,6 +46,8 @@ class ClientForm
                             ->options([
                                 'Com' => 'commercant',
                                 'phar'=> 'Pharmacien',
+                                'hum'=> 'Humanitaire',
+
                             ])
                             ->searchable()
                             ->required(),
@@ -159,8 +163,10 @@ class ClientForm
                             ->label('Signature')
                             ->image()
                             ->directory('clients')
+                            ->disk('public')  // ← Ajouter cette ligne
+                            ->visibility('public')
                             ->avatar()
-                            ->maxSize(2048),
+                            ->maxSize(5120),
                     
                         TextInput::make('identifiant_national')
                             ->label('Identifiant national')
