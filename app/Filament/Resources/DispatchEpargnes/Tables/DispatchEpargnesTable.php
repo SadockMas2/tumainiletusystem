@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Filament\Notifications\Notification;
+use illuminate\Support\Facades\Auth;    
 
 
 class DispatchEpargnesTable
@@ -32,6 +33,9 @@ class DispatchEpargnesTable
     public static function configure(Table $table): Table
     {
         return $table
+         ->query(function () {
+                return Auth::user()->Dispatch()->getQuery();
+            })
             ->columns([
                 TextColumn::make('groupeSolidaire.nom_groupe')
                     ->label('Groupe')

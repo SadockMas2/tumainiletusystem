@@ -9,6 +9,7 @@ use App\Filament\Resources\HistoriqueCompteSpecials\Schemas\HistoriqueCompteSpec
 use App\Filament\Resources\HistoriqueCompteSpecials\Tables\HistoriqueCompteSpecialsTable;
 use App\Models\HistoriqueCompteSpecial;
 use BackedEnum;
+use illuminate\Support\Facades\Auth;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -49,5 +50,37 @@ class HistoriqueCompteSpecialResource extends Resource
             'create' => CreateHistoriqueCompteSpecial::route('/create'),
             'edit' => EditHistoriqueCompteSpecial::route('/{record}/edit'),
         ];
+    }
+
+       public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('view_comptespecial');
+    }
+
+    
+        public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('create_comptespecial');
+    }
+
+    // 🔒 Contrôle des accès aux actions
+
+
+     public static function canEdit($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('edit_comptespecial');
+    }
+
+    public static function canDelete($record = null): bool
+    {
+          /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        return $user && $user->can('delete_comptespecial');
     }
 }

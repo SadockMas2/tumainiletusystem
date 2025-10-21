@@ -7,12 +7,16 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class CompteTransitoiresTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->query(function () {
+                return Auth::user()->compteTransitoires()->getQuery();
+            })
             ->columns([
                 TextColumn::make('user.name')->label('Agent'),
                 TextColumn::make('devise'),

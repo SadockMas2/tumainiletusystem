@@ -6,7 +6,7 @@ namespace App\Filament\Resources\DispatchEpargnes;
 use App\Filament\Resources\DispatchEpargneResource\Pages\ListDispatchEpargnes;
 use App\Filament\Resources\DispatchEpargnes\Pages\CreateDispatchEpargne;
 use App\Filament\Resources\DispatchEpargnes\Pages\EditDispatchEpargne;
-// use App\Filament\Resources\DispatchEpargnes\Pages\ListDispatchEpargnes;
+// use App\Filament\Resources\DispatchEpargnes\Pages\ListDispatchEpargness;
 // use App\Filament\Resources\DispatchEpargnes\Schemas\DispatchEpargneForm;
 // use App\Filament\Resources\DispatchEpargnes\Tables\DispatchEpargnesTable;
 // // use App\Filament\Resources\DispatchEpargnes\Tables\DispatchEpargnesTable;

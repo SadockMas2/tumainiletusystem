@@ -118,4 +118,9 @@ class Epargne extends Model
             // SUPPRIMER la logique de premiere_mise
         });
     }
+
+    public function user()
+    {
+        return $this->hasMany(\App\Models\User::class);
+    }
 }

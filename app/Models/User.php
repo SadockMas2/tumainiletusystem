@@ -79,4 +79,15 @@ class User extends Authenticatable
     //     return $this->belongsToMany(\Spatie\Permission\Models\Permission::class);
     // }
 
+    // Dans app/Models/User.php
+/// Dans app/Models/User.php
+public function compteTransitoires()
+    {
+        return $this->hasMany(\App\Models\CompteTransitoire::class);
+    }
+
+    public function epargne()
+    {
+        return $this->hasMany(\App\Models\Epargne::class);
+    }
 }

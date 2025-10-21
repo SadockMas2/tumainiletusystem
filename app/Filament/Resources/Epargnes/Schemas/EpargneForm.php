@@ -167,11 +167,14 @@ class EpargneForm
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set, $get) {
+                                // On ne remplit plus automatiquement le montant
+                                // Seulement le cycle est sélectionné automatiquement
                                 if ($state) {
                                     $cycle = Cycle::find($state);
                                     if ($cycle) {
-                                        $set('montant', $cycle->solde_initial);
                                         $set('devise', $cycle->devise);
+                                        // On ne définit plus le montant automatiquement
+                                        // $set('montant', null);
                                     }
                                 }
                             }),
@@ -180,7 +183,7 @@ class EpargneForm
                             ->label('Montant de l\'épargne')
                             ->numeric()
                             ->required()
-                            ->disabled(fn ($get) => !$get('cycle_id'))
+                            ->default(null) // S'assurer qu'il n'y a pas de valeur par défaut
                             ->dehydrated(),
 
                      Select::make('statut')
@@ -216,6 +219,7 @@ class EpargneForm
 
     /**
      * Méthode statique pour trouver un cycle ouvert selon le type
+     * MODIFIÉ : Ne plus remplir automatiquement le montant
      */
     private static function trouverCycle($set, $get, $devise, $typeField, $id)
     {
@@ -227,8 +231,9 @@ class EpargneForm
 
         if ($cycle) {
             $set('cycle_id', $cycle->id);
-            $set('montant', $cycle->solde_initial);
             $set('devise', $cycle->devise);
+            // On ne définit plus le montant automatiquement
+            // Le montant reste null pour que l'utilisateur le saisisse
         } else {
             $set('cycle_id', null);
             $set('montant', null);

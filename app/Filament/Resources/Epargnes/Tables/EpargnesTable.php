@@ -20,6 +20,10 @@ class EpargnesTable
     public static function configure(Table $table): Table
     {
         return $table
+          ->query(function () {
+                return Auth::user()->Epargne()->getQuery();
+            })
+        
             ->columns([
                 TextColumn::make('numero_compte_membre')
                     ->label('N° compte')
