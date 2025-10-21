@@ -1,5 +1,4 @@
 <?php
-// app/Models/CompteGroupe.php
 
 namespace App\Models;
 
@@ -37,12 +36,22 @@ class CompteGroupe extends Model
         parent::boot();
 
         static::creating(function ($compteGroupe) {
-            if ($compteGroupe->groupeSolidaire) {
-                // Générer le numéro de compte G00001, G00002...
-                $lastCompte = self::latest('id')->first();
-                $lastNumber = $lastCompte ? intval(substr($lastCompte->numero_compte, 1)) : 0;
-                $newNumber = $lastNumber + 1;
-                $compteGroupe->numero_compte = 'G' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+            if (!$compteGroupe->numero_compte) {
+                // Chercher le dernier numéro qui commence par GS
+                $lastCompte = self::where('numero_compte', 'LIKE', 'GS%')
+                    ->latest('id')
+                    ->first();
+                
+                if ($lastCompte) {
+                    // Extraire le nombre après "GS"
+                    $lastNumber = intval(substr($lastCompte->numero_compte, 2));
+                    $newNumber = $lastNumber + 1;
+                } else {
+                    // Si aucun compte GS n'existe, commencer à 1
+                    $newNumber = 1;
+                }
+                
+                $compteGroupe->numero_compte = 'GS' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
             }
         });
     }

@@ -22,7 +22,7 @@ class CompteEpargnesTable
     {
         return $table
             ->columns([
-            TextColumn::make('numero_compte')
+                TextColumn::make('numero_compte')
                     ->label('Numéro Compte')
                     ->searchable()
                     ->sortable(),
@@ -103,17 +103,16 @@ class CompteEpargnesTable
                     ->label('Dépôt')
                     ->icon('heroicon-o-plus')
                     ->color('success')
-                     ->action(function (CompteEpargne $record, array $data) {
+                    ->visible(fn (CompteEpargne $record): bool => $record->statut === 'actif')
+                    ->action(function (CompteEpargne $record, array $data) {
                         if ($record->crediter($data['montant'], $data['description'])) {
-                            // Message de succès
-                           Notification::make()
+                            Notification::make()
                                 ->title('Dépôt réussi')
-                                ->body("Le montant de {$data['montant']} {$record->devise} a été crédité sur le compte {$record->numero_compte}")
+                                ->body("Le montant de {$data['montant']} {$record->devise} a été crédité sur le compte épargne {$record->numero_compte}")
                                 ->success()
                                 ->send();
                         } else {
-                            // Message d'erreur
-                           Notification::make()
+                            Notification::make()
                                 ->title('Erreur de dépôt')
                                 ->body('Impossible d\'effectuer le dépôt')
                                 ->danger()
@@ -133,17 +132,16 @@ class CompteEpargnesTable
                     ->label('Retrait')
                     ->icon('heroicon-o-minus')
                     ->color('warning')
+                    ->visible(fn (CompteEpargne $record): bool => $record->statut === 'actif')
                     ->action(function (CompteEpargne $record, array $data) {
                         if ($record->debiter($data['montant'], $data['description'])) {
-                            // Message de succès
-                          Notification::make()
+                            Notification::make()
                                 ->title('Retrait réussi')
-                                ->body("Le montant de {$data['montant']} {$record->devise} a été retiré du compte {$record->numero_compte}")
+                                ->body("Le montant de {$data['montant']} {$record->devise} a été retiré du compte épargne {$record->numero_compte}")
                                 ->success()
                                 ->send();
                         } else {
-                            // Message d'erreur
-                        Notification::make()
+                            Notification::make()
                                 ->title('Erreur de retrait')
                                 ->body('Impossible d\'effectuer le retrait - solde insuffisant ou compte inactif')
                                 ->danger()
@@ -155,7 +153,7 @@ class CompteEpargnesTable
                             ->numeric()
                             ->required()
                             ->minValue(0.01)
-                             ->maxValue(fn (CompteEpargne $record) => $record->solde),
+                            ->maxValue(fn (CompteEpargne $record) => $record->solde),
                         Textarea::make('description')
                             ->label('Description'),
                     ]),

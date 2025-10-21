@@ -4,10 +4,10 @@ namespace App\Filament\Resources\DispatchEpargnes\Tables;
 
 use App\Models\Client;
 use App\Models\Compte;
+use App\Models\CompteEpargne; // Ajout pour les comptes épargne
 use App\Models\CompteTransitoire;
 use App\Models\Epargne;
 use App\Models\GroupeSolidaire;
-
 use App\Models\Mouvement;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -25,7 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Filament\Notifications\Notification;
-
+use Illuminate\Support\Facades\Auth;
 
 class DispatchEpargnesTable
 {
@@ -91,6 +91,10 @@ class DispatchEpargnesTable
                     ->label('Dispatcher')
                     ->icon('heroicon-o-arrow-right-circle')
                     ->color('success')
+                    ->visible(fn (Epargne $record): bool => 
+                        $record->statut === 'en_attente_dispatch' && 
+                        $record->user_id === Auth::id() // Seulement pour l'agent connecté
+                    )
                     ->schema(function (Epargne $record) {
                         $groupe = $record->groupeSolidaire;
                         $membres = $groupe ? $groupe->membres : collect();
@@ -165,7 +169,7 @@ class DispatchEpargnesTable
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Dispatcher l\'Épargne du Groupe')
-                    ->modalDescription('Répartir le montant collecté entre les membres du groupe.')
+                    ->modalDescription('Répartir le montant collecté entre les comptes épargne des membres du groupe.')
                     ->modalSubmitActionLabel('Confirmer le Dispatch'),
             ])
            ->toolbarActions([
@@ -175,6 +179,13 @@ class DispatchEpargnesTable
             ]);
     }
 
+    /**
+     * Appliquer le scope pour filtrer par agent connecté
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return Epargne::query()->where('user_id', Auth::id());
+    }
 
     /**
      * Calculer le total dans l'action
@@ -190,7 +201,7 @@ class DispatchEpargnesTable
     }
 
     /**
-     * Traiter le dispatch
+     * Traiter le dispatch vers les comptes épargne
      */
     private static function processDispatch(array $data): void
     {
@@ -226,15 +237,15 @@ class DispatchEpargnesTable
             $compteTransitoire->solde -= $montantTotal;
             $compteTransitoire->save();
             
-            // Créditer les comptes des membres
+            // Créditer les comptes épargne des membres
             foreach ($data['repartition'] as $repartition) {
                 $membreId = $repartition['membre_id'];
                 $montantMembre = $repartition['montant'];
                 
                 if ($montantMembre <= 0) continue;
                 
-                // Trouver ou créer le compte du membre
-                $compteMembre = Compte::firstOrCreate(
+                // Trouver ou créer le compte épargne du membre
+                $compteEpargne = CompteEpargne::firstOrCreate(
                     [
                         'client_id' => $membreId,
                         'devise' => $epargne->devise,
@@ -242,28 +253,30 @@ class DispatchEpargnesTable
                     ],
                     [
                         'solde' => 0,
-                        'numero_compte' => 'C' . str_pad($membreId, 6, '0', STR_PAD_LEFT),
+                        'numero_compte' => 'CE' . str_pad($membreId, 6, '0', STR_PAD_LEFT), // CE pour Compte Epargne
                         'nom' => Client::find($membreId)->nom,
                         'postnom' => Client::find($membreId)->postnom,
                         'prenom' => Client::find($membreId)->prenom,
-                        'statut' => 'actif'
+                        'statut' => 'actif',
+                        'taux_interet' => 2.5, // Taux d'intérêt par défaut
                     ]
                 );
                 
-                // Créditer le compte du membre
-                $compteMembre->solde += $montantMembre;
-                $compteMembre->save();
+                // Créditer le compte épargne du membre
+                $compteEpargne->solde += $montantMembre;
+                $compteEpargne->save();
                 
-                // Créer un mouvement pour le compte du membre
+                // Créer un mouvement pour le compte épargne du membre
                 Mouvement::create([
-                    'compte_id' => $compteMembre->id,
-                    'numero_compte' => $compteMembre->numero_compte,
-                    'client_nom' => $compteMembre->nom . ' ' . $compteMembre->postnom . ' ' . $compteMembre->prenom,
+                    'compte_id' => $compteEpargne->id,
+                    'numero_compte' => $compteEpargne->numero_compte,
+                    'client_nom' => $compteEpargne->nom . ' ' . $compteEpargne->postnom . ' ' . $compteEpargne->prenom,
                     'nom_deposant' => $epargne->agent_nom,
                     'type' => 'depot',
                     'montant' => $montantMembre,
-                    'solde_apres' => $compteMembre->solde,
+                    'solde_apres' => $compteEpargne->solde,
                     'description' => 'Dispatch épargne groupe: ' . $epargne->groupeSolidaire->nom_groupe,
+                    'devise' => $epargne->devise,
                 ]);
             }
             
@@ -273,7 +286,7 @@ class DispatchEpargnesTable
             
             Notification::make()
                 ->title('Dispatch Réussi')
-                ->body("Le montant de {$montantTotal} {$epargne->devise} a été réparti entre les membres du groupe.")
+                ->body("Le montant de {$montantTotal} {$epargne->devise} a été réparti entre les comptes épargne des membres du groupe.")
                 ->success()
                 ->send();
         });

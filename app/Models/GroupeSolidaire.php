@@ -54,31 +54,20 @@ class GroupeSolidaire extends Model
             }
         });
 
-        // Créer automatiquement les comptes USD et CDF lors de la création du groupe
-        static::created(function ($groupe) {
-            $groupe->creerComptesGroupes();
-        });
+        // SUPPRIMEZ cette partie pour ne pas créer automatiquement les comptes
+        // static::created(function ($groupe) {
+        //     $groupe->creerComptesGroupes();
+        // });
     }
 
-    public function creerComptesGroupes()
+    // Méthode pour créer un compte spécifique (USD ou CDF)
+    public function creerCompteGroupe($devise)
     {
-        // Créer le compte USD
-        Compte::create([
+        return Compte::create([
             'groupe_solidaire_id' => $this->id,
             'numero_compte' => $this->genererNumeroCompteGroupe(),
             'nom' => $this->nom_groupe,
-            'devise' => 'USD',
-            'solde' => 0,
-            'statut' => 'actif',
-            'type_compte' => 'groupe_solidaire'
-        ]);
-
-        // Créer le compte CDF
-        Compte::create([
-            'groupe_solidaire_id' => $this->id,
-            'numero_compte' => $this->genererNumeroCompteGroupe(),
-            'nom' => $this->nom_groupe,
-            'devise' => 'CDF',
+            'devise' => $devise,
             'solde' => 0,
             'statut' => 'actif',
             'type_compte' => 'groupe_solidaire'
@@ -88,6 +77,7 @@ class GroupeSolidaire extends Model
     private function genererNumeroCompteGroupe()
     {
         $lastCompte = Compte::where('type_compte', 'groupe_solidaire')
+            ->where('numero_compte', 'LIKE', 'GS%') // Seulement les numéros GS
             ->latest('id')
             ->first();
         
@@ -95,5 +85,17 @@ class GroupeSolidaire extends Model
         $newNumber = $lastNumber + 1;
         
         return 'GS' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+    }
+
+    // Vérifier si un compte existe pour une devise donnée
+    public function hasCompte($devise)
+    {
+        return $this->comptes()->where('devise', $devise)->exists();
+    }
+
+    // Récupérer tous les comptes du groupe
+    public function getComptesGroupes()
+    {
+        return $this->comptes()->where('type_compte', 'groupe_solidaire')->get();
     }
 }

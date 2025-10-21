@@ -70,12 +70,16 @@ class Compte extends Model
                 $compte->nom = $compte->groupeSolidaire->nom_groupe;
                 $compte->type_compte = 'groupe_solidaire';
 
-                // Générer automatiquement le numéro de compte pour les groupes
+                // Générer automatiquement le numéro de compte pour les groupes avec format GS
                 if (empty($compte->numero_compte)) {
-                    $lastCompte = self::where('type_compte', 'groupe_solidaire')->latest('id')->first();
-                    $lastNumber = $lastCompte ? intval(substr($lastCompte->numero_compte, 1)) : 0;
+                    $lastCompte = self::where('type_compte', 'groupe_solidaire')
+                        ->where('numero_compte', 'LIKE', 'GS%')
+                        ->latest('id')
+                        ->first();
+                    
+                    $lastNumber = $lastCompte ? intval(substr($lastCompte->numero_compte, 2)) : 0;
                     $newNumber = $lastNumber + 1;
-                    $compte->numero_compte = 'G' . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
+                    $compte->numero_compte = 'GS' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
                 }
             }
         });
