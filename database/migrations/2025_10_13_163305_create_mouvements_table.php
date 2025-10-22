@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('montant', 15, 2);
             $table->decimal('solde_apres', 15, 2)->nullable(); // solde après le mouvement
             $table->string('description')->nullable(); // facultatif
+            $table->boolean('est_cloture')->default(false);
             $table->timestamps();
         });
     }

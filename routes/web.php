@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\CompteController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\MouvementController; // Ajoutez cette ligne
+use Illuminate\Support\Facades\Route;
 use App\Models\Mouvement;
 
 Route::get('/', function () {
@@ -26,9 +27,16 @@ Route::prefix('credits')->group(function () {
 Route::get('comptes/{compte_id}/details', [CompteController::class, 'details'])->name('comptes.details');
 Route::get('comptes', [CompteController::class, 'index'])->name('comptes.index');
 
-
-
-
 Route::get('/mouvement/{mouvement}/bordereau', function (Mouvement $mouvement) {
     return view('bordereau-mouvement', compact('mouvement'));
 })->name('mouvement.bordereau');
+
+// Route simplifiée pour le rapport journalier
+Route::get('/mouvement/rapport-journalier/{date}', function ($date) {
+    // Logique temporaire - vous pourrez créer un contrôleur plus tard
+    $mouvements = Mouvement::whereDate('created_at', $date)->get();
+    $totalDepots = $mouvements->where('type', 'depot')->sum('montant');
+    $totalRetraits = $mouvements->where('type', 'retrait')->sum('montant');
+    
+    return view('rapport-journalier', compact('mouvements', 'totalDepots', 'totalRetraits', 'date'));
+})->name('mouvement.rapport-journalier');
